@@ -1,14 +1,42 @@
-import React from 'react';
-
+import React, { useState, useContext } from 'react';
 import Logo from '../../olx-logo.png';
 import './Signup.css';
+import { FirebaseContext } from '../../store/Context';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export default function Signup() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const { auth } = useContext(FirebaseContext);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!username || !email || !password) {
+      alert('Please fill all fields');
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        return updateProfile(result.user, { displayName: username });
+      })
+      .then(() => {
+        console.log('User created successfully and profile updated');
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error.message);
+        alert(`Error: ${error.message}`);
+      });
+  };
+
   return (
     <div>
       <div className="signupParentDiv">
-        <img width="200px" height="200px" src={Logo}></img>
-        <form>
+        <img width="200px" height="200px" src={Logo} alt="Signup Logo" />
+        <form onSubmit={handleSubmit}>
           <label htmlFor="fname">Username</label>
           <br />
           <input
@@ -16,7 +44,8 @@ export default function Signup() {
             type="text"
             id="fname"
             name="name"
-            defaultValue="John"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
           <br />
           <label htmlFor="fname">Email</label>
@@ -26,7 +55,8 @@ export default function Signup() {
             type="email"
             id="fname"
             name="email"
-            defaultValue="John"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
           <br />
           <label htmlFor="lname">Phone</label>
@@ -36,7 +66,8 @@ export default function Signup() {
             type="number"
             id="lname"
             name="phone"
-            defaultValue="Doe"
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
           />
           <br />
           <label htmlFor="lname">Password</label>
@@ -46,7 +77,8 @@ export default function Signup() {
             type="password"
             id="lname"
             name="password"
-            defaultValue="Doe"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
           <br />
           <br />
