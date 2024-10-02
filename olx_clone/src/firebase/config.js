@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyASwL6WPZg5Y-l16cLPs8gXHmtfl4h6blI",
-  authDomain: "olx-clone-a8591.firebaseapp.com",
-  projectId: "olx-clone-a8591",
-  storageBucket: "olx-clone-a8591.appspot.com",
-  messagingSenderId: "544003398078",
-  appId: "1:544003398078:web:aeaf33661ef1495e3401ef"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
