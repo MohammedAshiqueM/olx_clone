@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from '../firebase/config';
+import { auth, db } from '../firebase/config'; // Import Firestore
 
 export const FirebaseContext = createContext(null);
 export const AuthContext = createContext(null);
@@ -22,7 +22,9 @@ export default function Context({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      {children}
+      <FirebaseContext.Provider value={{ auth, db }}> {/* Provide Firestore here */}
+        {children}
+      </FirebaseContext.Provider>
     </AuthContext.Provider>
   );
 }
