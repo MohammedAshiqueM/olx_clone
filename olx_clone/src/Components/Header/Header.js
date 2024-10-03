@@ -22,6 +22,10 @@ function Header() {
     });
   };
 
+  const handleSellClick = () => {
+    navigate("/create");
+  };
+
   return (
     <div className="headerParentDiv">
       <div className="headerChildDiv">
@@ -57,7 +61,7 @@ function Header() {
             Logout
           </span>
         )}
-        <div className="sellMenu">
+        <div className="sellMenu" onClick={handleSellClick} style={{ cursor: 'pointer' }}>
           <SellButton />
           <div className="sellMenuContent">
             <SellButtonPlus />
