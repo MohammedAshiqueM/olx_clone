@@ -3,6 +3,7 @@ import Logo from '../../olx-logo.png';
 import './Signup.css';
 import { FirebaseContext } from '../../store/Context';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -10,8 +11,9 @@ export default function Signup() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const { auth } = useContext(FirebaseContext);
+  const firestore = getFirestore(); // Initialize Firestore
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!username || !email || !password) {
@@ -19,17 +21,28 @@ export default function Signup() {
       return;
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((result) => {
-        return updateProfile(result.user, { displayName: username });
-      })
-      .then(() => {
-        console.log('User created successfully and profile updated');
-      })
-      .catch((error) => {
-        console.error("Error creating user:", error.message);
-        alert(`Error: ${error.message}`);
+    try {
+      // Create user with email and password in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Update user profile with the username
+      await updateProfile(userCredential.user, { displayName: username });
+
+      // After successful user creation, add user data to Firestore 'users' collection
+      await addDoc(collection(firestore, 'users'), {
+        userId: userCredential.user.uid,
+        username,
+        email,
+        phone,
       });
+
+      console.log('User created and data added to Firestore successfully');
+      alert('Signup successful!');
+
+    } catch (error) {
+      console.error("Error creating user:", error.message);
+      alert(`Error: ${error.message}`);
+    }
   };
 
   return (
@@ -84,7 +97,7 @@ export default function Signup() {
           <br />
           <button>Signup</button>
         </form>
-        <a>Login</a>
+        <a href="/login">Login</a>
       </div>
     </div>
   );
