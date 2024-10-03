@@ -1,29 +1,55 @@
 import React, { useEffect, useState, useContext } from 'react';
 import './View.css';
-import { db } from '../../firebase/config'; // Ensure correct Firestore import
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import { PostContext } from '../../store/postContext';
 
 function View() {
   const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { postDetails } = useContext(PostContext);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       if (postDetails?.userId) {
         try {
-          const userQuery = db.collection('user').where('id', '==', postDetails.userId);
-          const snapshot = await userQuery.get();
-          snapshot.forEach((doc) => {
-            setUserDetails(doc.data());
-          });
+          console.log("Attempting to fetch user with ID:", postDetails.userId);
+          
+          const usersCollectionRef = collection(db, 'users');
+          const q = query(usersCollectionRef, where("userId", "==", postDetails.userId));
+          const querySnapshot = await getDocs(q);
+          
+          console.log("Query snapshot size:", querySnapshot.size);
+          console.log("Query snapshot empty?", querySnapshot.empty);
+
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
+            console.log("User data found:", userData);
+            setUserDetails(userData);
+          } else {
+            console.log("No matching user found for ID:", postDetails.userId);
+            setError("User not found");
+          }
         } catch (error) {
-          console.error("Error fetching user details: ", error);
+          console.error("Error fetching user details:", error);
+          setError(error.message);
+        } finally {
+          setLoading(false);
         }
+      } else {
+        console.log("No userId available in postDetails");
+        setLoading(false);
+        setError("No user ID available");
       }
     };
 
     fetchUserDetails();
   }, [postDetails]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!postDetails) {
     return <div>No post details available</div>;
@@ -39,12 +65,17 @@ function View() {
           <p>&#x20B9; {postDetails.price}</p>
           <span>{postDetails.name || "Product Name"}</span>
           <p>{postDetails.category || "Category"}</p>
-          <span>{new Date(postDetails.createdAt).toLocaleDateString()}</span>
+          <span>{postDetails.createdAt || "Date not available"}</span>
         </div>
-        {userDetails && (
+        {userDetails ? (
           <div className="contactDetails">
-            <p>{userDetails.username}</p>
-            <p>{userDetails.phone}</p>
+            <p>Seller: {userDetails.username || "Name not available"}</p>
+            <p>Contact: {userDetails.phone || "Phone not available"}</p>
+          </div>
+        ) : (
+          <div className="contactDetails">
+            <p>Seller details not available</p>
+            {error && <p>Error: {error}</p>}
           </div>
         )}
       </div>
