@@ -7,13 +7,14 @@ import Arrow from '../../assets/Arrow';
 import SellButton from '../../assets/SellButton';
 import SellButtonPlus from '../../assets/SellButtonPlus';
 import { AuthContext } from '../../store/Context';
+import { auth } from '../../firebase/config';
+
 
 function Header() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    const { auth } = require('../../firebase/config');
     auth.signOut().then(() => {
       console.log("User signed out");
       navigate("/login");

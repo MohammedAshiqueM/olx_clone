@@ -1,6 +1,5 @@
 import React, { createContext, useState } from "react";
 
-// Create the context
 const PostContext = createContext(null);
 
 export function PostProvider({ children }) {
@@ -13,5 +12,4 @@ export function PostProvider({ children }) {
   );
 }
 
-// Export PostContext for use in other components
 export { PostContext };

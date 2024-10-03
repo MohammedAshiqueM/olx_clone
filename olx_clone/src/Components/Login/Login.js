@@ -18,7 +18,6 @@ function Login() {
       return;
     }
 
-    // Firebase sign in
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Login successful:", userCredential.user);

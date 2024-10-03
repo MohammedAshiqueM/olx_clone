@@ -14,31 +14,31 @@ function View() {
     const fetchUserDetails = async () => {
       if (postDetails?.userId) {
         try {
-          console.log("Attempting to fetch user with ID:", postDetails.userId);
+          console.log(postDetails.userId);
           
           const usersCollectionRef = collection(db, 'users');
           const q = query(usersCollectionRef, where("userId", "==", postDetails.userId));
           const querySnapshot = await getDocs(q);
           
-          console.log("Query snapshot size:", querySnapshot.size);
-          console.log("Query snapshot empty?", querySnapshot.empty);
+          console.log("size:", querySnapshot.size);
+          console.log("empty?", querySnapshot.empty);
 
           if (!querySnapshot.empty) {
             const userData = querySnapshot.docs[0].data();
-            console.log("User data found:", userData);
+            console.log("User data:", userData);
             setUserDetails(userData);
           } else {
-            console.log("No matching user found for ID:", postDetails.userId);
+            console.log("No matching", postDetails.userId);
             setError("User not found");
           }
         } catch (error) {
-          console.error("Error fetching user details:", error);
+          console.error("Error fetching:", error);
           setError(error.message);
         } finally {
           setLoading(false);
         }
       } else {
-        console.log("No userId available in postDetails");
+        console.log("No userId");
         setLoading(false);
         setError("No user ID available");
       }

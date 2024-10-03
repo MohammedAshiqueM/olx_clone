@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/config'; // Update this path to match your project structure
+import { db } from '../../firebase/config';
 import Heart from '../../assets/Heart';
 import './Post.css';
 import {PostContext} from '../../store/postContext'
@@ -57,11 +57,11 @@ function Posts() {
                 <Heart />
               </div>
               <div className="image">
-                <img src={product.url || "../../../Images/R15V3.jpg"} alt={product.name} />
+                <img src={product.url} alt={product.name} />
               </div>
               <div className="content">
                 <p className="rate">&#x20B9; {product.price}</p>
-                <span className="kilometer">{product.category}</span> {/* Adjust this if necessary */}
+                <span className="kilometer">{product.category}</span>
                 <p className="name">{product.name}</p>
               </div>
               <div className="date">
@@ -76,7 +76,6 @@ function Posts() {
           <span>Fresh recommendations</span>
         </div>
         <div className="cards">
-          {/* Sample recommendation card */}
           <div className="card">
             <div className="favorite">
               <Heart />

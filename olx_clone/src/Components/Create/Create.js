@@ -26,15 +26,12 @@ const Create = () => {
     }
 
     try {
-      // Upload the image to Firebase Storage
       const imageRef = ref(storage, `/images/${image.name}`);
       await uploadBytes(imageRef, image);
       const url = await getDownloadURL(imageRef);
 
-      // Log URL to verify image upload
       console.log('Image uploaded, URL:', url);
 
-      // Save product info in Firestore
       const docRef = await addDoc(collection(firestore, 'products'), {
         name,
         category,
@@ -47,7 +44,6 @@ const Create = () => {
       console.log("Document written with ID: ", docRef.id);
       alert('Product uploaded successfully!');
 
-      // Clear the form
       setName("");
       setCategory("");
       setPrice("");

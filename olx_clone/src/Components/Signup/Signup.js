@@ -11,7 +11,7 @@ export default function Signup() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const { auth } = useContext(FirebaseContext);
-  const firestore = getFirestore(); // Initialize Firestore
+  const firestore = getFirestore();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,13 +22,10 @@ export default function Signup() {
     }
 
     try {
-      // Create user with email and password in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Update user profile with the username
       await updateProfile(userCredential.user, { displayName: username });
 
-      // After successful user creation, add user data to Firestore 'users' collection
       await addDoc(collection(firestore, 'users'), {
         userId: userCredential.user.uid,
         username,
